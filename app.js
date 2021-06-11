@@ -1,14 +1,16 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const app = express();
+
+const connectDb = require('./api/db')();
 
 const port = process.env.PORT || 3000;
-
-const app = express();
 
 // Middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 
-// Routes
+// Main Set Routes
 app.get('/', (_, res) => res.json({ message: 'Welcome to Coingecko Wrapper API'}));
 
 
