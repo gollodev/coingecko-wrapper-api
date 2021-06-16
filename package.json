@@ -22,9 +22,12 @@
   },
   "homepage": "https://github.com/gollodev/coingecko-wrapper-api#readme",
   "dependencies": {
+    "coingecko-api": "^1.0.10",
     "express": "^4.17.1",
+    "express-validator": "^6.12.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.13"
+    "mongoose": "^5.12.13",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
