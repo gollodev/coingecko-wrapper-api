@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.set('useFindAndModify', false)
 
 // Function to connect Mongo Database
 async function connectDb() {
@@ -6,7 +7,8 @@ async function connectDb() {
     try {
         const connector = await mongoose.connect(
             connectionString, 
-            { useNewUrlParser: true }
+            { useNewUrlParser: true },
+            { useUnifiedTopology: true }
         )
         if (connector) {
             console.log('MongoDB Run Successfully!')

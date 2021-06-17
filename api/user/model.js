@@ -30,10 +30,11 @@ const userSchema = new Schema({
         enum: { values: ['usd', 'eur', 'ars'], message: 'Invalid value only (usd,eur,ars) currency are valid' },
         default: 'usd'
     },
-    coin: {
-        type: mongoose.ObjectId,
+    coins: [{
+        type: Schema.Types.ObjectId,
+        unique: true,
         ref: Coin
-    },
+    }],
     date: {
         type: Date,
         default: Date.now

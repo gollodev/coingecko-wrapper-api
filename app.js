@@ -17,7 +17,7 @@ const coinRoutes = require('./api/coin')
 // Main Set Routes
 app.get('/', (_, res) => res.json({ message: 'Welcome to Coingecko Wrapper API'}))
 app.use('/user/', userRoutes)
-app.use('/coin/', coinRoutes)
+app.use('/coingecko/', coinRoutes)
 
 // Error Handler
 app.use((req,res,next) => {

@@ -15,16 +15,23 @@ function createToken (data, res) {
     })
 }
 
-// Authorization: Bearer <token>
-function verifyToken(req, _, next) {
-    const bearerHeader = req.headers['authorization']
-
-    if(typeof bearerHeader !== 'undefined') {
-        const bearerToken = bearerHeader.split(' ')[1]
-        req.token = bearerToken
-        next()
+function verifyToken(req, res, next) {
+    const token = req.headers['access-token']
+    if (token) {
+        jwt.verify(token, 'secretKey', (err, verifiedJwt) => {
+            if (err) {
+                return res.status(403).json({
+                    statusCode: 403,
+                    message: 'You token is invalid'
+                })
+            }
+            req.user = verifiedJwt 
+            return next()
+        })
     } else {
-        req.sendStatus(403)
+        return res.status(403).json({
+            statusCode: 403, message: 'You need a token'
+        })
     }
 }
 
