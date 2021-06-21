@@ -11,6 +11,7 @@ class CoinController {
         this.Coin        = coinModel
         this.User        = userModel
         this.getCoins    = this.getCoins.bind(this)
+        this.topCoins    = this.topCoins.bind(this)
         this.addCoins    = this.addCoins.bind(this)
         this._fetchCoins = this._fetchCoins.bind(this)
 
@@ -74,8 +75,8 @@ class CoinController {
             try {
                 const coin = await this.Coin.find().select(`symbol name image market_data.current_price.${currencyUser}`)
                 return res.status(200).json({
-                        statusCode: 200,
-                        data: coin
+                    statusCode: 200,
+                    data: coin
                 })
             } catch (error) {
                 return res.status(404).json({
@@ -95,7 +96,6 @@ class CoinController {
     async addCoins(req,res) {
         const currentUser = req.user.data
         const coinId      = req.params.coinId
-        console.log(typeof coinId)
 
         if (!currentUser) {
             return res.status(403).json({ statusCode: 403, message: 'user not logged'})
@@ -106,12 +106,28 @@ class CoinController {
         }
 
         try {
-            let coinsExist
+            let coinExists
             const searchByUserId = { _id: currentUser._id }
             const pushCoin = { $push: { coins: mongoose.Types.ObjectId(coinId) } }
-            
+
+            const findCoin = await this.User.findOne(searchByUserId)
+
+            findCoin.coins.map(coin => {
+                if (String(coin) === coinId) {
+                    coinExists = true
+                } 
+            })
+
+            if (coinExists) {
+                return res.status(403).json({
+                    statusCode: 403,
+                    message: 'Coin exists in user!'
+                })
+            }
+
             const saveCriptoToUser = await this.User.findOneAndUpdate(searchByUserId, pushCoin)
 
+            // if coin no exists in user, then save the coin
             if (saveCriptoToUser) {
                 return res.status(201).json({
                     statusCode: 201,
@@ -133,13 +149,29 @@ class CoinController {
 
     async topCoins(req, res) {
         const currentUser = req.user.data
+        const searchByUserId = { _id: currentUser._id }
 
         if (!currentUser) {
-            return res.status(403).json({ statusCode: 403, message: 'user not logged'})
+            return res.status(403).json({ 
+                statusCode: 403, 
+                message: 'user not logged'
+            })
         }
 
         try {
-            const user = await this.User.findOne()
+            const findUser = await this.User.findOne(searchByUserId).populate('coins')
+        
+            if (findUser) {
+                return res.status(200).json({
+                    statusCode: 200,
+                    data: findUser 
+                })
+            } else {
+                return res.status(403).json({
+                    statusCode: 403,
+                    message: 'user not found'
+                })
+            }
         } catch (error) {
             return res.status(404).json({
                 statusCode: 404,
