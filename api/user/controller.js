@@ -1,6 +1,10 @@
 const { validationResult } = require('express-validator')
 const { createToken }      = require('../lib/jwt')
 
+/*
+ * Class from USertValid
+ * @class UserController
+ */
 class UserController {
     constructor(userModel) {
         if (!userModel) {
